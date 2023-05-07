@@ -5,6 +5,7 @@
     <select id="board-size" v-model="boardSize">
       <option value=2>2x2</option>
       <option value=4>4x4</option>
+      <option value=6>6x6</option>
     </select>
     <GameBoard :board-size="boardSize" />
   </div>

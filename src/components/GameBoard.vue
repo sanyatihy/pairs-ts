@@ -23,6 +23,7 @@ import five from '@/assets/images/five.jpg';
 import six from '@/assets/images/six.jpg';
 import seven from '@/assets/images/seven.jpg';
 import eight from '@/assets/images/eight.jpg';
+import nine from '@/assets/images/nine.jpg';
 
 const CARD_FLIP_DELAY = 1000;
 const GAME_RESET_DELAY = 3000;
@@ -74,7 +75,7 @@ export default defineComponent({
     methods: {
         
         shuffleCards() {
-            const images = [one, two, three, four, five, six, seven, eight].slice(0, (this.boardSize * this.boardSize) / 2);
+            const images = [one, two, three, four, five, six, seven, eight, nine, one, two, three, four, five, six, seven, eight, nine].slice(0, (this.boardSize * this.boardSize) / 2);
 
             const cardPairs = images.concat(images);
 
@@ -164,9 +165,9 @@ export default defineComponent({
 .game-board {
     background-color: #ad159e;
     display: grid;
-    grid-gap: 16px;
-    max-width: 600px;
+    grid-gap: 10px;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 10px;
 }
 </style>
