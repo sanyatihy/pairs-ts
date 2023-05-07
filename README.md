@@ -1,5 +1,7 @@
 # pairs-ts
 
+Just exploring Vue and TypeScript.
+
 ## Project setup
 ```
 yarn install
