@@ -1,13 +1,16 @@
 <template>
-    <div class="game-board" :style="gameBoardStyle">
-        <Card
-            v-for="(card, index) in cards"
-            :key="index"
-            :image-src="card.imageSrc"
-            :image-alt="card.imageAlt"
-            :is-flipped="card.isFlipped"
-            @card-clicked="handleCardClick(index)"
-        />
+    <div>
+        <div class="game-board" :style="gameBoardStyle">
+            <Card
+                v-for="(card, index) in cards"
+                :key="index"
+                :image-src="card.imageSrc"
+                :image-alt="card.imageAlt"
+                :is-flipped="card.isFlipped"
+                @card-clicked="handleCardClick(index)"
+            />
+        </div>
+        <button @click="resetGame" class="reset-button">Reset Game</button>
     </div>
 </template>
 
@@ -26,7 +29,7 @@ import eight from '@/assets/images/eight.jpg';
 import nine from '@/assets/images/nine.jpg';
 
 const CARD_FLIP_DELAY = 1000;
-const GAME_RESET_DELAY = 3000;
+const GAME_RESET_DELAY = 1000;
 
 export default defineComponent({
     components: {
@@ -41,7 +44,7 @@ export default defineComponent({
     computed: {
         gameBoardStyle(): { gridTemplateColumns: string } {
             return {
-                gridTemplateColumns: `repeat(${this.boardSize}, minmax(100px, 1fr))`,
+                gridTemplateColumns: `repeat(${this.currentBoardSize}, minmax(100px, 1fr))`,
             };
         },
     },
@@ -62,6 +65,7 @@ export default defineComponent({
         secondCard: number | null;
         attempts: number;
         matchedPairs: number;
+        currentBoardSize: number;
     } {
         return {
             cards: [],
@@ -69,6 +73,7 @@ export default defineComponent({
             secondCard: null,
             attempts: 0,
             matchedPairs: 0,
+            currentBoardSize: this.boardSize,
         };
     },
     
@@ -117,42 +122,52 @@ export default defineComponent({
         },
 
         checkMatch() {
-            if (
-                this.firstCard !== null &&
-                this.secondCard !== null &&
-                this.cards[this.firstCard].imageSrc === this.cards[this.secondCard].imageSrc
-            ) {
+            if (this.firstCard === null || this.secondCard === null) {
+                return
+            }
+
+            if (this.cards[this.firstCard].imageSrc === this.cards[this.secondCard].imageSrc) {
                 this.cards[this.firstCard].isMatched = true;
                 this.cards[this.secondCard].isMatched = true;
                 this.matchedPairs++;
 
                 if (this.matchedPairs === this.cards.length / 2) {
-                    console.log("You won! Attempts:", this.attempts);
+                    alert(`You won! Attempts: ${this.attempts}`);
                     setTimeout(() => {
                         this.resetGame();
                     }, GAME_RESET_DELAY);
                 }
-            } else if (
-                this.firstCard !== null && 
-                this.secondCard !== null
-            ) {
+            } else {
                 this.cards[this.firstCard].isFlipped = false;
                 this.cards[this.secondCard].isFlipped = false;
             }
-
+            
             this.firstCard = null;
             this.secondCard = null;
         },
 
         resetGame() {
-            this.cards = [];
-            this.firstCard = null;
-            this.secondCard = null;
-            this.attempts = 0;
-            this.matchedPairs = 0;
-            this.shuffleCards();
-        },
+            let timeout = 0;
+            if (this.attempts !== 0) {
+                timeout = 500;
+            }
 
+            this.cards.forEach((card) => {
+                if (card.isFlipped) {
+                    card.isFlipped = false;
+                }
+            });
+
+            setTimeout(() => {
+                this.currentBoardSize = this.boardSize;
+                this.cards = [];
+                this.firstCard = null;
+                this.secondCard = null;
+                this.attempts = 0;
+                this.matchedPairs = 0;
+                this.shuffleCards();
+            }, timeout);
+        },
     },
 
     created() {
@@ -169,5 +184,20 @@ export default defineComponent({
     max-width: 700px;
     margin: 0 auto;
     padding: 10px;
+}
+.reset-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #2c3e50;
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  background-color: #1a2533;
 }
 </style>
